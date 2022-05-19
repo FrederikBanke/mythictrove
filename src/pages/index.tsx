@@ -1,4 +1,5 @@
-import type { NextPage } from "next";
+import ProjectSelector from "components/projectSelector/ProjectSelector";
+import type { NextPage, } from "next";
 import Head from "next/head";
 
 const Home: NextPage = () => {
@@ -14,6 +15,7 @@ const Home: NextPage = () => {
         <h1>
           Mythic Trove
         </h1>
+        <ProjectSelector />
       </main>
 
       <footer>
