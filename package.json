@@ -10,10 +10,12 @@
     "test": "jest --watch"
   },
   "dependencies": {
+    "@nextui-org/react": "^1.0.0-beta.7",
     "@stitches/react": "^1.2.7",
     "dexie": "^3.2.2",
     "dexie-react-hooks": "^1.1.1",
     "next": "12.1.0",
+    "next-themes": "^0.2.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-icons": "^4.3.1"
