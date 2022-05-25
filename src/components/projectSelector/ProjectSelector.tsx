@@ -63,7 +63,7 @@ const ProjectSelector = () => {
                             onDelete={project => confirmAction(() => deleteProject(project.id), {
                                 confirmAcceptText: "Delete",
                                 confirmTitle: <Text id="modal-title" size={20}>
-                                    Do you want to delete <Text
+                                    Delete <Text
                                         b
                                         size={20}
                                         weight="bold"
@@ -73,6 +73,18 @@ const ProjectSelector = () => {
                                     >
                                         {project.name}
                                     </Text>
+                                </Text>,
+                                confirmDialogContent: <Text id="modal-title">
+                                    Are you sure you want to delete <Text
+                                        b
+                                        weight="bold"
+                                        css={{
+                                            textGradient: "45deg, $yellow600 -20%, $red600 100%",
+                                        }}
+                                    >
+                                        {project.name}
+                                    </Text>.
+                                    All content will be lost.
                                 </Text>,
                             })}
                         />)
