@@ -1,4 +1,4 @@
-import { IProject, IProjectSimple, } from "types/projects";
+import { IProject, IProjectData, IProjectSimple, } from "types/projects";
 import { db, } from "./db";
 
 export const addProject = async (project: IProject): Promise<void> => {
@@ -16,4 +16,10 @@ export const getProjects = async (): Promise<IProjectSimple[]> => {
 
 export const deleteProject = async (projectId: string) => {
     return db.projects.delete(projectId);
+};
+
+export const updateProject = async (projectId: string, data: IProjectData) => {
+    return db.projects.update(projectId, {
+        data: data,
+    });
 };

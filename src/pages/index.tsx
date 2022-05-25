@@ -23,9 +23,22 @@ const Home: NextPage = () => {
       </Head>
 
       <main>
-        <h1>
-          Mythic Trove
-        </h1>
+        <Text h1 size={64}>
+          <Text span
+            css={{
+              textGradient: "45deg, $blue600 -20%, $pink600 50%",
+            }}
+          >
+            Mythic
+          </Text>
+          <Text span
+            css={{
+              textGradient: "45deg, $purple600 -20%, $pink600 100%",
+            }}
+          >
+            Trove
+          </Text>
+        </Text>
         <Row gap={1} align="center">
           <Text>Current theme: {type}</Text>
           <Switch
