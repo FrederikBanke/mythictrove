@@ -17,7 +17,6 @@ const ProjectSelector = () => {
     const createProjectModalCloseHandler = () => {
         setIsCreatingProject(false);
         setProjectName(undefined);
-        console.log("Create Project Modal closed");
     };
 
     const addNewProject = (projectName: string | undefined) => {
