@@ -1,4 +1,5 @@
 import { createStitches, } from "@stitches/react";
+import { createTheme, } from "@nextui-org/react";
 
 export const {
     styled,
@@ -7,7 +8,7 @@ export const {
     getCssText,
     globalCss,
     theme,
-    createTheme,
+    // createTheme,
     config,
 } = createStitches({
     theme: {
@@ -71,4 +72,11 @@ export const globalStyles = globalCss({
 });
 
 export const lightTheme = createTheme({
+    type: "light",
+    theme: {},
+});
+
+export const darkTheme = createTheme({
+    type: "dark",
+    theme: {},
 });
