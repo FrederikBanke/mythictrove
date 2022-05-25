@@ -1,4 +1,5 @@
 import { Container, Textarea, } from "@nextui-org/react";
+import AppBar from "components/AppBar";
 import { useRouter, } from "next/router";
 import React, { useCallback, useEffect, useState, } from "react";
 import { IProject, IProjectData, } from "types/projects";
@@ -45,6 +46,7 @@ const PojectPage = () => {
 
     return (
         <Container>
+            <AppBar title={project?.name} />
             <Textarea
                 aria-label="editor"
                 id="editor"
