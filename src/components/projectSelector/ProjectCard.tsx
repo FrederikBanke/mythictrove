@@ -1,12 +1,6 @@
-import { Button, } from "components/ui/Button";
-import { Div, FlexDiv, } from "components/ui/Div";
+import { Button, Card, Row, Text, } from "@nextui-org/react";
 import React, { FC, } from "react";
-import { styled, } from "src/stitches.config";
 import { IProjectSimple, } from "types/projects";
-
-const Span = styled("span", {
-    cursor: "pointer",
-});
 
 export type IProjectCardProps = {
     project: IProjectSimple;
@@ -20,18 +14,12 @@ const ProjectCard: FC<IProjectCardProps> = ({
     onDelete,
 }) => {
     return (
-        <FlexDiv direction="row"
-            css={{
-                border: "1px solid grey",
-                borderRadius: "5px",
-                padding: "10px",
-                width: "300px",
-                justifyContent: "space-between",
-            }}
-        >
-            <Span onClick={() => onClick?.(project)}>{project.name}</Span>
-            <Button onClick={() => onDelete?.(project)}>Delete</Button>
-        </FlexDiv>
+        <Card hoverable clickable onClick={() => onClick?.(project)}>
+            <Row align="center" justify="space-between">
+                <Text>{project.name}</Text>
+                <Button ghost color="error" light onPress={() => onDelete?.(project)}>Delete</Button>
+            </Row>
+        </Card>
     );
 };
 
