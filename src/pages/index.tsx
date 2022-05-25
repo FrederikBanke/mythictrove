@@ -1,12 +1,19 @@
-import { Row, Switch, Text, useTheme, } from "@nextui-org/react";
+import { Card, Row, Switch, Text, useTheme, } from "@nextui-org/react";
 import { useTheme as useNextTheme, } from "next-themes";
 import ProjectSelector from "components/projectSelector/ProjectSelector";
 import type { NextPage, } from "next";
 import Head from "next/head";
+import { useState, } from "react";
 
 const Home: NextPage = () => {
   const { setTheme } = useNextTheme();
   const { isDark, type } = useTheme();
+  const [isHidden, setIsHidden] = useState(false);
+
+  const hideNotice = () => {
+    setIsHidden(true);
+  };
+
   return (
     <div>
       <Head>
@@ -27,6 +34,20 @@ const Home: NextPage = () => {
           />
         </Row>
         <ProjectSelector />
+        {!isHidden && <Card clickable hoverable
+          onClick={hideNotice}
+          css={{
+            position: "fixed",
+            top: 0,
+            right: 0,
+            width: "200px",
+            margin: "$5",
+          }}
+        >
+          Under development.
+          Progress may be lost.
+          Click to dismiss.
+        </Card>}
       </main>
 
       <footer>
