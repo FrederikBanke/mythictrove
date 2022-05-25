@@ -17,6 +17,7 @@ export type IResource = {
 };
 
 export type IResourceWiki = {
+    content: string;
 };
 
 export type IResourceMap = {
