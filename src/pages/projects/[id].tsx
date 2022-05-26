@@ -1,6 +1,7 @@
 import { Container, Textarea, } from "@nextui-org/react";
 import AppBar from "components/AppBar";
 import TabContainer from "components/resource/TabContainer";
+import Head from "next/head";
 import { useRouter, } from "next/router";
 import React, { useCallback, useEffect, useState, } from "react";
 import { IProject, IProjectData, IResourceTab, } from "types/projects";
@@ -46,6 +47,9 @@ const PojectPage = () => {
 
     return (
         <Container>
+            <Head>
+                <title>{project?.name}</title>
+            </Head>
             <AppBar title={project?.name} />
             <TabContainer
                 tabs={project?.data?.resources && project.data.resources.length > 0 && project.data.resources[0].tabs || [{ id: "1", name: "main", data: { resourceType: "wiki", content: "" } }]}

@@ -118,8 +118,6 @@ const ProjectSelector = () => {
                         labelPlaceholder="Project Name"
                         contentLeft={<FaFeatherAlt fill="currentColor" />}
                         onChange={(e) => setProjectName(e.target.value)}
-                        css={{
-                        }}
                     />
                 </Modal.Body>
                 <Modal.Footer>
