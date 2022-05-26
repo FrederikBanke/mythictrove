@@ -7,6 +7,7 @@ import { addProject, deleteProject, getProjects, } from "utils/database/projects
 import ProjectCard from "./ProjectCard";
 import { FaFeatherAlt, FaPlus, } from "react-icons/fa";
 import { confirmAction, } from "utils/confirmAction";
+import { makeId, } from "utils/makeId";
 
 const ProjectSelector = () => {
     const router = useRouter();
@@ -22,7 +23,7 @@ const ProjectSelector = () => {
     const addNewProject = (projectName: string | undefined) => {
         if (projectName) {
             addProject({
-                id: crypto.randomUUID?.() || (Math.random() * 100).toString(),
+                id: makeId(),
                 name: projectName,
                 data: { resources: [] },
                 number: projects?.length || 0,
