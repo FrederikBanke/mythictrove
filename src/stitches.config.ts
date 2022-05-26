@@ -1,14 +1,12 @@
 import { createStitches, } from "@stitches/react";
-import { createTheme, } from "@nextui-org/react";
+import { createTheme, globalCss, } from "@nextui-org/react";
 
 export const {
     styled,
     css,
     keyframes,
     getCssText,
-    globalCss,
     theme,
-    // createTheme,
     config,
 } = createStitches({
     theme: {
@@ -37,40 +35,6 @@ export const {
     },
 });
 
-export const globalStyles = globalCss({
-    "*": {
-        margin: 0,
-        padding: 0,
-        boxSizing: "border-box",
-        scrollbarWidth: "thin",
-    },
-    "h1,h2,h3,h4,h5,h6": {
-        fontFamily: "Roboto, Arial, sans-serif",
-    },
-    "body": {
-        fontFamily: "Nunito, Roboto, Arial, sans-serif",
-        fontSize: "16px",
-        margin: 0,
-        color: "$text",
-        height: "100vh",
-        width: "100vw",
-        backgroundColor: "$background",
-    },
-    "a": {
-        color: "inherit",
-        textDecoration: "none",
-    },
-    ".click, button, a": {
-        cursor: "pointer",
-    },
-    ".opaque": {
-        opacity: "1 !important",
-    },
-    "[contenteditable]": {
-        outline: "0px solid transparent",
-    },
-});
-
 export const lightTheme = createTheme({
     type: "light",
     theme: {},
@@ -79,4 +43,66 @@ export const lightTheme = createTheme({
 export const darkTheme = createTheme({
     type: "dark",
     theme: {},
+});
+
+// export const globalStyles = globalCss({
+//     "*": {
+//         margin: 0,
+//         padding: 0,
+//         boxSizing: "border-box",
+//         scrollbarWidth: "thin",
+//     },
+//     "h1,h2,h3,h4,h5,h6": {
+//         fontFamily: "Roboto, Arial, sans-serif",
+//     },
+//     "body": {
+//         fontFamily: "Nunito, Roboto, Arial, sans-serif",
+//         fontSize: "16px",
+//         margin: 0,
+//         color: "$text",
+//         height: "100vh",
+//         width: "100vw",
+//         backgroundColor: "$background",
+//     },
+//     "a": {
+//         color: "inherit",
+//         textDecoration: "none",
+//     },
+//     ".click, button, a": {
+//         cursor: "pointer",
+//     },
+//     ".opaque": {
+//         opacity: "1 !important",
+//     },
+//     "[contenteditable]": {
+//         outline: "0px solid transparent",
+//     },
+// });
+
+export const globalStyles = globalCss({
+    "*": {
+        scrollbarWidth: "thin",
+    },
+    "::-webkit-scrollbar": {
+        width: "8px",
+    },
+    "::-webkit-scrollbar-thumb": {
+        // background: "$primarySolidContrast",
+        borderRadius: "1ex",
+    },
+    "::-webkit-scrollbar-corner": {
+        background: " #000",
+    },
+    [`.${lightTheme} *::-webkit-scrollbar`]: {
+        backgroundColor: "LightGray",
+    },
+    [`.${lightTheme} *::-webkit-scrollbar-thumb`]: {
+        background: "gray",
+    },
+    [`.${darkTheme} *::-webkit-scrollbar`]: {
+        backgroundColor: "$secondaryLight",
+    },
+    [`.${darkTheme} *::-webkit-scrollbar-thumb`]: {
+        background: "$secondary",
+    },
 });

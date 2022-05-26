@@ -48,7 +48,6 @@ const ProjectSelector = () => {
                 css={{
                     dflex: "center",
                     gap: "$8",
-                    maxWidth: "700px",
                 }}
             >
                 <Button onPress={() => setIsCreatingProject(true)} icon={<FaPlus />}>Create New Project</Button>
@@ -109,7 +108,7 @@ const ProjectSelector = () => {
                         </Text>
                     </Text>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body css={{ paddingTop: "30px" }}>
                     <Input
                         clearable
                         bordered
@@ -119,6 +118,8 @@ const ProjectSelector = () => {
                         labelPlaceholder="Project Name"
                         contentLeft={<FaFeatherAlt fill="currentColor" />}
                         onChange={(e) => setProjectName(e.target.value)}
+                        css={{
+                        }}
                     />
                 </Modal.Body>
                 <Modal.Footer>

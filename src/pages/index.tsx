@@ -1,9 +1,9 @@
-import { Card, Row, Switch, Text, useTheme, } from "@nextui-org/react";
+import { Card, Container, Row, Switch, Text, useTheme, } from "@nextui-org/react";
 import { useTheme as useNextTheme, } from "next-themes";
-import ProjectSelector from "components/projectSelector/ProjectSelector";
 import type { NextPage, } from "next";
 import Head from "next/head";
 import { useState, } from "react";
+import HomepagePanel from "components/HomepagePanel";
 
 const Home: NextPage = () => {
   const { setTheme } = useNextTheme();
@@ -39,14 +39,9 @@ const Home: NextPage = () => {
             Trove
           </Text>
         </Text>
-        <Row gap={1} align="center">
-          <Text>Current theme: {type}</Text>
-          <Switch
-            checked={isDark}
-            onChange={(e) => setTheme(e.target.checked ? "dark" : "light")}
-          />
+        <Row fluid justify="center">
+          <HomepagePanel />
         </Row>
-        <ProjectSelector />
         {!isHidden && <Card clickable hoverable
           onClick={hideNotice}
           css={{
