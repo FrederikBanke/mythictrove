@@ -1,11 +1,11 @@
-import { Button, Checkbox, Col, Container, Input, Modal, Row, Spacer, Text, } from "@nextui-org/react";
+import { Button, Container, Input, Modal, Text, } from "@nextui-org/react";
 import { useLiveQuery, } from "dexie-react-hooks";
 import { useRouter, } from "next/router";
-import React, { useEffect, useState, } from "react";
-import { IProject, IProjectSimple, } from "types/projects";
+import React, { useState, } from "react";
+import { IProjectSimple, } from "types/projects";
 import { addProject, deleteProject, getProjects, } from "utils/database/projects";
 import ProjectCard from "./ProjectCard";
-import { FaFeatherAlt, FaPen, FaPlus, } from "react-icons/fa";
+import { FaFeatherAlt, FaPlus, } from "react-icons/fa";
 import { confirmAction, } from "utils/confirmAction";
 
 const ProjectSelector = () => {
@@ -48,7 +48,6 @@ const ProjectSelector = () => {
                 css={{
                     dflex: "center",
                     gap: "$8",
-                    maxWidth: "700px",
                 }}
             >
                 <Button onPress={() => setIsCreatingProject(true)} icon={<FaPlus />}>Create New Project</Button>
@@ -109,7 +108,7 @@ const ProjectSelector = () => {
                         </Text>
                     </Text>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body css={{ paddingTop: "30px" }}>
                     <Input
                         clearable
                         bordered
@@ -118,7 +117,9 @@ const ProjectSelector = () => {
                         size="lg"
                         labelPlaceholder="Project Name"
                         contentLeft={<FaFeatherAlt fill="currentColor" />}
-                        onBlur={(e) => setProjectName(e.target.value)}
+                        onChange={(e) => setProjectName(e.target.value)}
+                        css={{
+                        }}
                     />
                 </Modal.Body>
                 <Modal.Footer>

@@ -17,7 +17,7 @@ const ProjectCard: FC<IProjectCardProps> = ({
         <Card hoverable clickable onClick={() => onClick?.(project)}>
             <Row align="center" justify="space-between">
                 <Text>{project.name}</Text>
-                <Button ghost color="error" light onPress={() => onDelete?.(project)}>Delete</Button>
+                <Button auto size="sm" ghost color="error" onPress={() => onDelete?.(project)}>Delete</Button>
             </Row>
         </Card>
     );

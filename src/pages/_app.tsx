@@ -1,10 +1,10 @@
 import { NextUIProvider, } from "@nextui-org/react";
 import { ThemeProvider as NextThemesProvider, } from "next-themes";
 import type { AppProps, } from "next/app";
-import { darkTheme, lightTheme, } from "src/stitches.config";
+import { darkTheme, globalStyles, lightTheme, } from "src/stitches.config";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  // globalStyles();
+  globalStyles();
   return (
     <NextThemesProvider
       defaultTheme="system"
