@@ -2,6 +2,8 @@ import { Button, Container, Input, Modal, Row, Text, } from "@nextui-org/react";
 import React, { FC, useEffect, useState, } from "react";
 import { FaFeatherAlt, } from "react-icons/fa";
 import { IResourceTab, IResourceWiki, ITabData, ITabTypes, } from "types/projects";
+import { confirmAction, } from "utils/confirmAction";
+import { makeId, } from "utils/makeId";
 import ResourceWiki from "./ResourceWiki";
 
 type TabContainerProps = {
@@ -13,7 +15,8 @@ const TabContainer: FC<TabContainerProps> = ({
     tabs,
     saveData,
 }) => {
-    const [tab, setTab] = useState<string>(tabs[0].id);
+
+    const [tab, setTab] = useState<string>(tabs.length < 1 ? "" : tabs[0].id);
     const [newTabName, setNewTabName] = useState<string>();
     const [newTabNameId, setNewTabNameId] = useState<string>();
 
@@ -22,20 +25,25 @@ const TabContainer: FC<TabContainerProps> = ({
     };
 
     const getTab = (tabId: string) => {
+        if (tabs.length === 0) {
+            // If no tabs, create a new one.
+            return addTab();
+        }
         const tab = tabs.find((t) => t.id === tabId);
         if (!tab) {
-            console.warn("Could not find tab", tabId, "in tabs", tabs);
-            throw new Error(`Tab with id ${tabId} not found`);
+            console.warn("Could not find tab", tabId, "in tabs", tabs, "using first tab instead");
+            return tabs[0];
         }
         return tab;
     };
 
-    const addTab = () => {
-        const newTabs: IResourceTab[] = [...tabs, { id: `${tabs.length + 1}`, name: "New Tab", data: { resourceType: "wiki", content: "" } }];
+    const addTab = (name = "New Tab") => {
+        const newTab: IResourceTab = { id: makeId(), name: name, data: { resourceType: "wiki", content: "" } };
+        const newTabs: IResourceTab[] = [...tabs, newTab];
         saveData(newTabs);
         setTab(newTabs[newTabs.length - 1].id);
+        return newTab;
     };
-
     const updateTab = (tabId: string, data: ITabData) => {
         const newTabs: IResourceTab[] = tabs.map((t) => {
             if (t.id === tabId) {
@@ -53,6 +61,15 @@ const TabContainer: FC<TabContainerProps> = ({
             }
             return t;
         });
+        saveData(newTabs);
+    };
+
+    const deleteTab = (tabId: string) => {
+        const newTabs: IResourceTab[] = tabs.filter((t) => t.id !== tabId);
+        if (newTabs.length === 0) {
+            const newTab = addTab("Main");
+            newTabs.push(newTab);
+        }
         saveData(newTabs);
     };
 
@@ -79,7 +96,7 @@ const TabContainer: FC<TabContainerProps> = ({
                     </Button>)
                 }
                 <Button
-                    onPress={addTab}
+                    onPress={() => addTab()}
                     flat
                     color="success"
                     css={{
@@ -137,6 +154,15 @@ const TabContainer: FC<TabContainerProps> = ({
                         closeTabNameHandler();
                     }}>
                         Change
+                    </Button>
+                    <Button color="error" auto onClick={() => confirmAction(() => {
+                        deleteTab(newTabNameId);
+                        closeTabNameHandler();
+                    }, {
+                        confirmAcceptText: "Delete",
+                        confirmTitle: "Are you sure you want to delete this tab?",
+                    })}>
+                        Delete Tab
                     </Button>
                 </Modal.Footer>
             </Modal>}

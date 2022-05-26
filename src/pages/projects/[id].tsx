@@ -6,6 +6,7 @@ import { useRouter, } from "next/router";
 import React, { useCallback, useEffect, useState, } from "react";
 import { IProject, IProjectData, IResourceTab, } from "types/projects";
 import { getProject, updateProject, } from "utils/database/projects";
+import { makeId, } from "utils/makeId";
 
 const PojectPage = () => {
     const router = useRouter();
@@ -45,6 +46,10 @@ const PojectPage = () => {
         await updateProject(project.id, newData);
     };
 
+    if (!project) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <Container>
             <Head>
@@ -52,7 +57,7 @@ const PojectPage = () => {
             </Head>
             <AppBar title={project?.name} />
             <TabContainer
-                tabs={project?.data?.resources && project.data.resources.length > 0 && project.data.resources[0].tabs || [{ id: "1", name: "main", data: { resourceType: "wiki", content: "" } }]}
+                tabs={project.data.resources.length > 0 && project.data.resources[0].tabs || [{ id: makeId(), name: "main", data: { resourceType: "wiki", content: "" } }]}
                 saveData={saveTabs}
             />
         </Container>
