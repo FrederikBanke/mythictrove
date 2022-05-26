@@ -1,4 +1,4 @@
-import { Button, Container, Row, Text, } from "@nextui-org/react";
+import { Button, Row, Text, } from "@nextui-org/react";
 import { useRouter, } from "next/router";
 import React, { FC, } from "react";
 import { FaHome, } from "react-icons/fa";
@@ -18,7 +18,7 @@ const AppBar: FC<AppBarProps> = ({
                 auto
                 ghost
                 icon={<FaHome />}
-                onClick={() => router.push("/")}
+                onPress={() => router.push("/")}
             />
             <Text h1 size={32}>
                 {title}
