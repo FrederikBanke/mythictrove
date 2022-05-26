@@ -1,5 +1,6 @@
-import { Button, Container, Row, Text, } from "@nextui-org/react";
+import { Button, Container, Input, Modal, Row, Text, } from "@nextui-org/react";
 import React, { FC, useEffect, useState, } from "react";
+import { FaFeatherAlt, } from "react-icons/fa";
 import { IResourceTab, IResourceWiki, ITabData, ITabTypes, } from "types/projects";
 import ResourceWiki from "./ResourceWiki";
 
@@ -13,6 +14,12 @@ const TabContainer: FC<TabContainerProps> = ({
     saveData,
 }) => {
     const [tab, setTab] = useState<string>(tabs[0].id);
+    const [newTabName, setNewTabName] = useState<string>();
+    const [newTabNameId, setNewTabNameId] = useState<string>();
+
+    const closeTabNameHandler = () => {
+        setNewTabNameId(undefined);
+    };
 
     const getTab = (tabId: string) => {
         const tab = tabs.find((t) => t.id === tabId);
@@ -39,20 +46,100 @@ const TabContainer: FC<TabContainerProps> = ({
         saveData(newTabs);
     };
 
+    const updateTabName = (tabId: string, name: string) => {
+        const newTabs: IResourceTab[] = tabs.map((t) => {
+            if (t.id === tabId) {
+                return { ...t, name };
+            }
+            return t;
+        });
+        saveData(newTabs);
+    };
+
     return (
         <Container>
-            <Row gap={2}>
+            <Row gap={2} align="center" >
                 {
-                    tabs.map(tab => <Text key={tab.id} onClick={() => {
-                        setTab(tab.id);
-                    }} >{tab.name}</Text>)
+                    tabs.map(t => <Button
+                        key={t.id}
+                        flat
+                        color={t.id === tab ? "primary" : "secondary"}
+                        onClick={() => {
+                            setTab(t.id);
+                        }}
+                        onContextMenu={(e) => {
+                            e.preventDefault();
+                            setNewTabNameId(t.id);
+                        }}
+                        css={{
+                            borderRadius: 0,
+                        }}
+                    >
+                        {t.name}
+                    </Button>)
                 }
-                <Button size="xs" onPress={addTab}>Add Tab</Button>
+                <Button
+                    onPress={addTab}
+                    flat
+                    color="success"
+                    css={{
+                        borderRadius: 0,
+                    }}
+                >
+                    Add Tab
+                </Button>
             </Row>
             <TabContent
                 tab={getTab(tab)}
                 saveTab={(data) => updateTab(tab, data.data)}
             />
+            {newTabNameId && <Modal
+                closeButton
+                aria-labelledby="change-tab-name"
+                open={!!newTabNameId}
+                onClose={closeTabNameHandler}
+            >
+                <Modal.Header>
+                    <Text id="modal-title" size={20}>
+                        Change tab name for <Text
+                            b
+                            size={24}
+                            weight="bold"
+                            css={{
+                                textGradient: "45deg, $yellow600 -20%, $red600 100%",
+                            }}
+                        >
+                            {getTab(newTabNameId).name}
+                        </Text>
+                    </Text>
+                </Modal.Header>
+                <Modal.Body css={{ paddingTop: "30px" }}>
+                    <Input
+                        clearable
+                        bordered
+                        fullWidth
+                        color="primary"
+                        size="lg"
+                        labelPlaceholder="Tab Name"
+                        initialValue={getTab(newTabNameId).name}
+                        contentLeft={<FaFeatherAlt fill="currentColor" />}
+                        onChange={(e) => setNewTabName(e.target.value)}
+                    />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button auto flat color="error" onClick={closeTabNameHandler}>
+                        Cancel
+                    </Button>
+                    <Button auto onClick={() => {
+                        if (newTabName) {
+                            updateTabName(newTabNameId, newTabName);
+                        }
+                        closeTabNameHandler();
+                    }}>
+                        Change
+                    </Button>
+                </Modal.Footer>
+            </Modal>}
         </Container>
     );
 };
