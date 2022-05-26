@@ -1,9 +1,12 @@
 import { Container, Textarea, } from "@nextui-org/react";
 import AppBar from "components/AppBar";
+import TabContainer from "components/resource/TabContainer";
+import Head from "next/head";
 import { useRouter, } from "next/router";
 import React, { useCallback, useEffect, useState, } from "react";
-import { IProject, IProjectData, } from "types/projects";
+import { IProject, IProjectData, IResourceTab, } from "types/projects";
 import { getProject, updateProject, } from "utils/database/projects";
+import { makeId, } from "utils/makeId";
 
 const PojectPage = () => {
     const router = useRouter();
@@ -25,7 +28,7 @@ const PojectPage = () => {
         }
     }, [loadProject, router.query.id]);
 
-    const saveProject = async (data: string) => {
+    const saveTabs = async (data: IResourceTab[]) => {
         if (!project) {
             return;
         }
@@ -33,34 +36,29 @@ const PojectPage = () => {
             resources: [
                 {
                     properties: [],
-                    tabs: [
-                        {
-                            content: data,
-                        },
-                    ],
+                    tabs: data,
                 },
             ],
         };
+        // Save in local state.
+        setProject({ ...project, data: newData });
+        // Save in DB.
         await updateProject(project.id, newData);
     };
 
+    if (!project) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <Container>
+            <Head>
+                <title>{project?.name}</title>
+            </Head>
             <AppBar title={project?.name} />
-            <Textarea
-                aria-label="editor"
-                id="editor"
-                animated={false}
-                fullWidth
-                css={{
-                    "label": {
-                        backgroundColor: "transparent",
-                    },
-                }}
-                placeholder="Start typing..."
-                // @ts-ignore
-                initialValue={project?.data.resources[0]?.tabs[0]?.content}
-                onChange={(e) => saveProject(e.target.value)}
+            <TabContainer
+                tabs={project.data.resources.length > 0 && project.data.resources[0].tabs || [{ id: makeId(), name: "main", data: { resourceType: "wiki", content: "" } }]}
+                saveData={saveTabs}
             />
         </Container>
     );
