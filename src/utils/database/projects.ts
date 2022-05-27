@@ -18,8 +18,14 @@ export const deleteProject = async (projectId: string) => {
     return db.projects.delete(projectId);
 };
 
-export const updateProject = async (projectId: string, data: IProjectData) => {
+export const updateProject = async (projectId: string, data: Partial<IProjectData>) => {
     return db.projects.update(projectId, {
         data: data,
+    });
+};
+
+export const renameProject = async (projectId: string, name: string) => {
+    return db.projects.update(projectId, {
+        name,
     });
 };
