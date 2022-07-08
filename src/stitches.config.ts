@@ -80,6 +80,10 @@ export const darkTheme = createTheme({
 // });
 
 export const globalStyles = globalCss({
+    "html, body, #__next, #__next > div": {
+        height: "100%",
+        overflow: "clip",
+    },
     "*": {
         scrollbarWidth: "thin",
     },

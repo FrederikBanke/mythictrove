@@ -1,6 +1,7 @@
 import { Button, Container, Input, Modal, Row, Text, } from "@nextui-org/react";
-import React, { FC, useEffect, useState, } from "react";
+import React, { FC, useCallback, useEffect, useState, } from "react";
 import { FaFeatherAlt, } from "react-icons/fa";
+import { toast, } from "react-toastify";
 import { IResourceTab, IResourceWiki, ITabData, ITabTypes, } from "types/projects";
 import { confirmAction, } from "utils/confirmAction";
 import { makeId, } from "utils/makeId";
@@ -8,6 +9,9 @@ import ResourceWiki from "./ResourceWiki";
 
 type TabContainerProps = {
     tabs: IResourceTab[];
+    /**
+     * Save all of the tabs in the resource.
+     */
     saveData(data: IResourceTab[]): void;
 };
 
@@ -16,7 +20,8 @@ const TabContainer: FC<TabContainerProps> = ({
     saveData,
 }) => {
 
-    const [tab, setTab] = useState<string>(tabs.length < 1 ? "" : tabs[0].id);
+    const [selectedTabId, setSelectedTabId] = useState<string>(tabs.length < 1 ? "" : tabs[0].id);
+    const [selectedTab, setSelectedTab] = useState<IResourceTab>();
     const [newTabName, setNewTabName] = useState<string>();
     const [newTabNameId, setNewTabNameId] = useState<string>();
 
@@ -24,26 +29,42 @@ const TabContainer: FC<TabContainerProps> = ({
         setNewTabNameId(undefined);
     };
 
-    const getTab = (tabId: string) => {
-        if (tabs.length === 0) {
-            // If no tabs, create a new one.
-            return addTab();
-        }
-        const tab = tabs.find((t) => t.id === tabId);
-        if (!tab) {
-            console.warn("Could not find tab", tabId, "in tabs", tabs, "using first tab instead");
-            return tabs[0];
-        }
-        return tab;
-    };
+    const addTab = useCallback(
+        (name = "New Tab") => {
+            const newTab: IResourceTab = { id: makeId(), name: name, data: { resourceType: "wiki", content: "" } };
+            const newTabs: IResourceTab[] = [...tabs, newTab];
+            saveData(newTabs);
+            setSelectedTabId(newTabs[newTabs.length - 1].id);
+            return newTab;
+        },
+        [saveData, tabs],
+    );
 
-    const addTab = (name = "New Tab") => {
-        const newTab: IResourceTab = { id: makeId(), name: name, data: { resourceType: "wiki", content: "" } };
-        const newTabs: IResourceTab[] = [...tabs, newTab];
-        saveData(newTabs);
-        setTab(newTabs[newTabs.length - 1].id);
-        return newTab;
-    };
+    const getTab = useCallback(
+        (tabId: string): IResourceTab => {
+            if (tabs.length === 0) {
+                // If no tabs, create a new one.
+                return addTab();
+            }
+            const tab = tabs.find((t) => t.id === tabId);
+            if (!tab) {
+                console.warn("Could not find tab", tabId, "in tabs", tabs, "using first tab instead");
+                toast.warn(`Could not find tab ${tabId} in tabs, using first tab instead`);
+                setSelectedTabId(tabs[0].id);
+                return tabs[0];
+            }
+            return tab;
+        },
+        [addTab, tabs],
+    );
+
+    useEffect(() => {
+        const tab = getTab(selectedTabId);
+        console.log("Setting tab to:", tab);
+        toast.info(`Set tab to: ${tab.name}`);
+        setSelectedTab(tab);
+    }, [selectedTabId, getTab]);
+
     const updateTab = (tabId: string, data: ITabData) => {
         const newTabs: IResourceTab[] = tabs.map((t) => {
             if (t.id === tabId) {
@@ -70,19 +91,20 @@ const TabContainer: FC<TabContainerProps> = ({
             const newTab = addTab("Main");
             newTabs.push(newTab);
         }
+        console.info("Deleted tab:", tabId);
         saveData(newTabs);
     };
 
     return (
         <Container>
-            <Row gap={2} align="center" >
+            <Row gap={2} align="center">
                 {
                     tabs.map(t => <Button
                         key={t.id}
                         flat
-                        color={t.id === tab ? "primary" : "secondary"}
+                        color={t.id === selectedTabId ? "primary" : "secondary"}
                         onClick={() => {
-                            setTab(t.id);
+                            setSelectedTabId(t.id);
                         }}
                         onContextMenu={(e) => {
                             e.preventDefault();
@@ -107,8 +129,8 @@ const TabContainer: FC<TabContainerProps> = ({
                 </Button>
             </Row>
             <TabContent
-                tab={getTab(tab)}
-                saveTab={(data) => updateTab(tab, data.data)}
+                tab={selectedTab}
+                saveTab={(data) => updateTab(selectedTabId, data.data)}
             />
             {newTabNameId && <Modal
                 closeButton
@@ -173,7 +195,7 @@ const TabContainer: FC<TabContainerProps> = ({
 export default TabContainer;
 
 type TabProps = {
-    tab: IResourceTab;
+    tab: IResourceTab | undefined;
     saveTab(data: IResourceTab): void;
 };
 
@@ -181,6 +203,10 @@ const TabContent: FC<TabProps> = ({
     tab,
     saveTab,
 }) => {
+    if (typeof tab === "undefined") {
+        return null;
+    }
+
     const saveTabData = (data: ITabData) => {
         saveTab({ ...tab, data });
     };

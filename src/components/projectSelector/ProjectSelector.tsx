@@ -27,7 +27,21 @@ const ProjectSelector = () => {
             addProject({
                 id: makeId(),
                 name: projectName,
-                data: { resources: [] },
+                data: {
+                    resources: [{
+                        id: makeId(),
+                        name: projectName,
+                        properties: [],
+                        tabs: [{
+                            id: makeId(),
+                            name: "Main",
+                            data: {
+                                resourceType: "wiki",
+                                content: "",
+                            },
+                        }],
+                    }],
+                },
                 number: projects?.length || 0,
             });
         }
