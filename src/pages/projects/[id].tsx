@@ -55,13 +55,35 @@ const ProjectPage = () => {
             console.info("Could not save project. Project is undefined.");
             return;
         }
-        // Find the index of the resource to update.
+        // Create new list with updated resource.
         const newResources = project.data.resources.map(r => {
             if (r.id === data.id) {
                 return data;
             }
             return r;
         });
+        const newData: IProjectData = {
+            resources: newResources,
+        };
+        try {
+            // Save in local state.
+            setProject({ ...project, data: newData });
+            // Save in DB.
+            await updateProject(project.id, newData);
+        } catch (error) {
+            toast.error("Could not save project");
+            console.error("Could not save project.", error);
+        }
+    };
+
+    const deleteResource = async (data: IResource) => {
+        if (!project) {
+            toast.warn("Could not delete resource. Project is undefined");
+            console.info("Could not delete resource. Project is undefined.");
+            return;
+        }
+        // Filter away the resource to delete.
+        const newResources = project.data.resources.filter(r => r.id !== data.id);
         const newData: IProjectData = {
             resources: newResources,
         };
@@ -102,6 +124,7 @@ const ProjectPage = () => {
                             setProject({ ...project, data: newData });
                             setResource(resource);
                         }}
+                        onDeleteResource={(resource) => deleteResource(resource)}
                     />
                 </Container>
                 <Resource

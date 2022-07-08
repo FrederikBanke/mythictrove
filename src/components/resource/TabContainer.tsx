@@ -103,7 +103,7 @@ const TabContainer: FC<TabContainerProps> = ({
                         key={t.id}
                         flat
                         color={t.id === selectedTabId ? "primary" : "secondary"}
-                        onClick={() => {
+                        onPress={() => {
                             setSelectedTabId(t.id);
                         }}
                         onContextMenu={(e) => {
@@ -166,10 +166,10 @@ const TabContainer: FC<TabContainerProps> = ({
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button auto flat color="error" onClick={closeTabNameHandler}>
+                    <Button auto flat color="error" onPress={closeTabNameHandler}>
                         Cancel
                     </Button>
-                    <Button auto onClick={() => {
+                    <Button auto onPress={() => {
                         if (newTabName) {
                             updateTabName(newTabNameId, newTabName);
                         }
@@ -177,7 +177,7 @@ const TabContainer: FC<TabContainerProps> = ({
                     }}>
                         Change
                     </Button>
-                    <Button color="error" auto onClick={() => confirmAction(() => {
+                    <Button color="error" auto onPress={() => confirmAction(() => {
                         deleteTab(newTabNameId);
                         closeTabNameHandler();
                     }, {

@@ -143,10 +143,10 @@ const ProjectSelector = () => {
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button auto flat color="error" onClick={createProjectModalCloseHandler}>
+                    <Button auto flat color="error" onPress={createProjectModalCloseHandler}>
                         Cancel
                     </Button>
-                    <Button auto onClick={() => {
+                    <Button auto onPress={() => {
                         addNewProject(projectName);
                         createProjectModalCloseHandler();
                     }}>
@@ -188,10 +188,10 @@ const ProjectSelector = () => {
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button auto flat color="error" onClick={createProjectModalCloseHandler}>
+                    <Button auto flat color="error" onPress={createProjectModalCloseHandler}>
                         Cancel
                     </Button>
-                    <Button auto onClick={() => {
+                    <Button auto onPress={() => {
                         if (projectName) {
                             updateProjectName(isRenamingProject.id, projectName);
                         }

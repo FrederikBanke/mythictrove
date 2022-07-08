@@ -1,19 +1,23 @@
 import { Button, Card, Col, Container, Grid, Text, } from "@nextui-org/react";
 import { List, } from "components/ui/containers/List";
 import React, { FC, useEffect, } from "react";
+import { FaTrash, } from "react-icons/fa";
 import { IProject, IResource, } from "types/projects";
+import { confirmAction, } from "utils/confirmAction";
 import { makeId, } from "utils/makeId";
 
 type ProjectTreeProps = {
     project: IProject;
     onSelect(project: IResource): void;
     onAddResource(project: IResource): void;
+    onDeleteResource(project: IResource): void;
 };
 
 const ProjectTree: FC<ProjectTreeProps> = ({
     project,
     onSelect,
     onAddResource,
+    onDeleteResource,
 }) => {
 
     // Select initial resource.
@@ -47,7 +51,19 @@ const ProjectTree: FC<ProjectTreeProps> = ({
                                 clickable
                                 hoverable
                             >
-                                {resource.name}
+                                <Container alignItems="center" justify="space-between" css={{ display: "flex", flexFlow: "row", flexWrap: "nowrap", padding: 0 }}>
+                                    {resource.name}
+                                    <Button
+                                        auto
+                                        color="error"
+                                        onPress={() => confirmAction(() => onDeleteResource(resource), {
+                                            confirmTitle: <Text h3>Deleting <Text b weight="bold">{resource.name}</Text></Text>,
+                                            confirmAcceptText: "Delete",
+                                            confirmDialogContent: <Text>This will delete this resource, and all of its children.</Text>,
+                                        })}
+                                        icon={<FaTrash />}
+                                    />
+                                </Container>
                             </Card>
                         );
                     })}
