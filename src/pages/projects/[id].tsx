@@ -114,17 +114,20 @@ const ProjectPage = () => {
                     <ProjectTree
                         project={project}
                         onSelect={(resource) => setResource(resource)}
-                        onAddResource={(resource) => {
+                        onAddResource={async (resource) => {
                             const newData: IProjectData = {
                                 resources: [
-                                    resource,
                                     ...project.data.resources,
+                                    resource,
                                 ],
                             };
                             setProject({ ...project, data: newData });
                             setResource(resource);
+                            // Save in DB.
+                            await updateProject(project.id, newData);
                         }}
-                        onDeleteResource={(resource) => deleteResource(resource)}
+                        onDeleteResource={deleteResource}
+                        onResourceUpdated={saveResource}
                     />
                 </Container>
                 <Resource
