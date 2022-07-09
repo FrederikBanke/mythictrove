@@ -128,7 +128,7 @@ const ProjectTree: FC<ProjectTreeProps> = ({
                         if (newResourceName) {
                             onResourceUpdated({
                                 ...focusedResource,
-                                name: newResourceName
+                                name: newResourceName,
                             });
                         }
                         onCloseHandler();
