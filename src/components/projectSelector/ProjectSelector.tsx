@@ -3,7 +3,7 @@ import { useLiveQuery, } from "dexie-react-hooks";
 import { useRouter, } from "next/router";
 import React, { useState, } from "react";
 import { IProjectSimple, } from "types/projects";
-import { addProject, deleteProject, getProjects, } from "utils/database/projects";
+import { addProject, deleteProject, getProjects, renameProject, updateProject, } from "utils/database/projects";
 import ProjectCard from "./ProjectCard";
 import { FaFeatherAlt, FaPlus, } from "react-icons/fa";
 import { confirmAction, } from "utils/confirmAction";
@@ -13,10 +13,12 @@ const ProjectSelector = () => {
     const router = useRouter();
     const projects = useLiveQuery<IProjectSimple[]>(() => getProjects(), []);
     const [isCreatingProject, setIsCreatingProject] = useState(false);
+    const [isRenamingProject, setIsRenamingProject] = useState<IProjectSimple>();
     const [projectName, setProjectName] = useState<string>();
 
     const createProjectModalCloseHandler = () => {
         setIsCreatingProject(false);
+        setIsRenamingProject(undefined);
         setProjectName(undefined);
     };
 
@@ -25,10 +27,28 @@ const ProjectSelector = () => {
             addProject({
                 id: makeId(),
                 name: projectName,
-                data: { resources: [] },
+                data: {
+                    resources: [{
+                        id: makeId(),
+                        name: projectName,
+                        properties: [],
+                        tabs: [{
+                            id: makeId(),
+                            name: "Main",
+                            data: {
+                                resourceType: "wiki",
+                                content: "",
+                            },
+                        }],
+                    }],
+                },
                 number: projects?.length || 0,
             });
         }
+    };
+
+    const updateProjectName = (projectId: string, projectName: string) => {
+        renameProject(projectId, projectName);
     };
 
     return (
@@ -86,6 +106,7 @@ const ProjectSelector = () => {
                                     All content will be lost.
                                 </Text>,
                             })}
+                            onContextMenu={setIsRenamingProject}
                         />)
                 }
             </Container>
@@ -122,10 +143,10 @@ const ProjectSelector = () => {
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button auto flat color="error" onClick={createProjectModalCloseHandler}>
+                    <Button auto flat color="error" onPress={createProjectModalCloseHandler}>
                         Cancel
                     </Button>
-                    <Button auto onClick={() => {
+                    <Button auto onPress={() => {
                         addNewProject(projectName);
                         createProjectModalCloseHandler();
                     }}>
@@ -133,6 +154,53 @@ const ProjectSelector = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            {isRenamingProject && <Modal
+                closeButton
+                aria-labelledby="change-project-name"
+                open={true}
+                onClose={createProjectModalCloseHandler}
+            >
+                <Modal.Header>
+                    <Text id="modal-title" size={20}>
+                        Rename project <Text
+                            b
+                            size={24}
+                            weight="bold"
+                            css={{
+                                textGradient: "45deg, $yellow600 -20%, $red600 100%",
+                            }}
+                        >
+                            {isRenamingProject.name}
+                        </Text>
+                    </Text>
+                </Modal.Header>
+                <Modal.Body css={{ paddingTop: "30px" }}>
+                    <Input
+                        clearable
+                        bordered
+                        fullWidth
+                        color="primary"
+                        size="lg"
+                        labelPlaceholder="Project Name"
+                        initialValue={isRenamingProject.name}
+                        contentLeft={<FaFeatherAlt fill="currentColor" />}
+                        onChange={(e) => setProjectName(e.target.value)}
+                    />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button auto flat color="error" onPress={createProjectModalCloseHandler}>
+                        Cancel
+                    </Button>
+                    <Button auto onPress={() => {
+                        if (projectName) {
+                            updateProjectName(isRenamingProject.id, projectName);
+                        }
+                        createProjectModalCloseHandler();
+                    }}>
+                        Rename
+                    </Button>
+                </Modal.Footer>
+            </Modal>}
         </Container>
     );
 };
