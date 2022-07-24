@@ -20,8 +20,8 @@ const TabContainer: FC<TabContainerProps> = ({
     saveData,
 }) => {
 
-    const [selectedTabId, setSelectedTabId] = useState<string>(tabs.length < 1 ? "" : tabs[0].id);
-    const [selectedTab, setSelectedTab] = useState<IResourceTab>();
+    const [selectedTabId, setSelectedTabId] = useState<string | null>(tabs.length < 1 ? null : tabs[0].id);
+    const [selectedTab, setSelectedTab] = useState<IResourceTab | null>(null);
     const [newTabName, setNewTabName] = useState<string>();
     const [newTabNameId, setNewTabNameId] = useState<string>();
 
@@ -29,41 +29,50 @@ const TabContainer: FC<TabContainerProps> = ({
         setNewTabNameId(undefined);
     };
 
-    const addTab = useCallback(
-        (name = "New Tab") => {
-            const newTab: IResourceTab = { id: makeId(), name: name, data: { resourceType: "wiki", content: "" } };
-            const newTabs: IResourceTab[] = [...tabs, newTab];
-            saveData(newTabs);
-            setSelectedTabId(newTabs[newTabs.length - 1].id);
-            return newTab;
-        },
-        [saveData, tabs],
-    );
+    const addTab = (name = "New Tab") => {
+        const newTab: IResourceTab = { id: makeId(), name: name, data: { resourceType: "wiki", content: "" } };
+        const newTabs: IResourceTab[] = [...tabs, newTab];
+        saveData(newTabs);
+        setSelectedTabId(newTabs[newTabs.length - 1].id);
+        return newTab;
+    };
 
-    const getTab = useCallback(
-        (tabId: string): IResourceTab => {
-            if (tabs.length === 0) {
-                // If no tabs, create a new one.
-                return addTab();
-            }
-            const tab = tabs.find((t) => t.id === tabId);
-            if (!tab) {
-                console.warn("Could not find tab", tabId, "in tabs", tabs, "using first tab instead");
-                toast.warn(`Could not find tab ${tabId} in tabs, using first tab instead`);
-                setSelectedTabId(tabs[0].id);
-                return tabs[0];
-            }
-            return tab;
-        },
-        [addTab, tabs],
-    );
+    const getTab = (tabId: string): IResourceTab | null => {
+        if (tabs.length === 0) {
+            return null;
+        }
+        const tab = tabs.find((t) => t.id === tabId);
+        if (!tab) {
+            console.warn("Could not find tab", tabId, "in tabs", tabs);
+            toast.warn(`Could not find tab ${tabId} in tabs.`);
+            setSelectedTabId(null);
+            return null;
+        }
+        return tab;
+    };
 
     useEffect(() => {
-        const tab = getTab(selectedTabId);
-        console.log("Setting tab to:", tab);
-        toast.info(`Set tab to: ${tab.name}`);
-        setSelectedTab(tab);
-    }, [selectedTabId, getTab]);
+        if (selectedTabId) {
+            const tab = getTab(selectedTabId);
+            if (!tab) {
+
+            } else {
+                console.log("Setting tab to:", tab);
+                setSelectedTab(tab);
+            }
+        } else {
+            toast.info("Resource has no tabs");
+            setSelectedTab(null);
+        }
+    }, [selectedTabId]);
+
+    useEffect(() => {
+        if (tabs.length < 1) {
+            setSelectedTabId(null);
+        } else {
+            setSelectedTabId(tabs[0].id);
+        }
+    }, [tabs.map(t => t.id).join(";")]);
 
     const updateTab = (tabId: string, data: ITabData) => {
         const newTabs: IResourceTab[] = tabs.map((t) => {
@@ -86,13 +95,16 @@ const TabContainer: FC<TabContainerProps> = ({
     };
 
     const deleteTab = (tabId: string) => {
+        // Delete tab
         const newTabs: IResourceTab[] = tabs.filter((t) => t.id !== tabId);
-        if (newTabs.length === 0) {
-            const newTab = addTab("Main");
-            newTabs.push(newTab);
-        }
         console.info("Deleted tab:", tabId);
         saveData(newTabs);
+        // Change to first tab
+        if (newTabs.length < 1) {
+            setSelectedTabId(null);
+        } else {
+            setSelectedTabId(newTabs[0].id);
+        }
     };
 
     return (
@@ -128,10 +140,10 @@ const TabContainer: FC<TabContainerProps> = ({
                     Add Tab
                 </Button>
             </Row>
-            <TabContent
+            {selectedTab && selectedTabId && <TabContent
                 tab={selectedTab}
                 saveTab={(data) => updateTab(selectedTabId, data.data)}
-            />
+            />}
             {newTabNameId && <Modal
                 closeButton
                 aria-labelledby="change-tab-name"
@@ -148,7 +160,7 @@ const TabContainer: FC<TabContainerProps> = ({
                                 textGradient: "45deg, $yellow600 -20%, $red600 100%",
                             }}
                         >
-                            {getTab(newTabNameId).name}
+                            {getTab(newTabNameId)?.name}
                         </Text>
                     </Text>
                 </Modal.Header>
@@ -160,7 +172,7 @@ const TabContainer: FC<TabContainerProps> = ({
                         color="primary"
                         size="lg"
                         labelPlaceholder="Tab Name"
-                        initialValue={getTab(newTabNameId).name}
+                        initialValue={getTab(newTabNameId)?.name}
                         contentLeft={<FaFeatherAlt fill="currentColor" />}
                         onChange={(e) => setNewTabName(e.target.value)}
                     />

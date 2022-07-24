@@ -40,6 +40,7 @@ const ProjectSelector = () => {
                                 content: "",
                             },
                         }],
+                        parent: null,
                     }],
                 },
                 number: projects?.length || 0,

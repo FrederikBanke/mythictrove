@@ -30,7 +30,7 @@ const Resource: FC<ResourceProps> = ({
     }
 
     return (
-        <div>
+        <div style={{ flexGrow: 1 }}>
             <h1>{resource.name}</h1>
             <TabContainer
                 tabs={resource.tabs || [{ id: makeId(), name: "main", data: { resourceType: "wiki", content: "" } }]}

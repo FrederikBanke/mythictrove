@@ -16,6 +16,8 @@ export type IProjectData = {
     resources: IResource[];
 };
 
+export type ResourcePath = string[];
+
 /**
  * A resource element.
  * 
@@ -26,6 +28,14 @@ export type IResource = {
     name: string;
     tabs: IResourceTab[];
     properties: IResourceProperty[];
+    /**
+     * ID of the parent resource. `null` if resource is at the root of the project.
+     */
+    parent: string | null;
+    /**
+     * IDs of the child resources for this resource.
+     */
+    children?: string[];
 };
 
 export type ITabTypes = "wiki" | "map" | "board";

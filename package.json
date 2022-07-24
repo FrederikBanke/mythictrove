@@ -10,7 +10,7 @@
     "test": "jest --watch"
   },
   "dependencies": {
-    "@nextui-org/react": "^1.0.0-beta.7",
+    "@nextui-org/react": "1.0.0-beta.7",
     "@stitches/react": "^1.2.7",
     "dexie": "^3.2.2",
     "dexie-react-hooks": "^1.1.1",
