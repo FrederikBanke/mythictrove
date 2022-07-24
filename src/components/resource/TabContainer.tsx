@@ -71,7 +71,7 @@ const TabContainer: FC<TabContainerProps> = ({
         if (tabs.length < 1) {
             setSelectedTabId(null);
         } else {
-            setSelectedTabId(tabs[tabs.length - 1].id);
+            setSelectedTabId(tabs[0].id);
         }
     }, [tabs.map(t => t.id).join(";")]);
 
