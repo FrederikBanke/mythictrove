@@ -58,7 +58,6 @@ const TabContainer: FC<TabContainerProps> = ({
 
             } else {
                 console.log("Setting tab to:", tab);
-                toast.info(`Set tab to: ${tab.name}`);
                 setSelectedTab(tab);
             }
         } else {

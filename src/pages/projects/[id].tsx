@@ -111,13 +111,13 @@ const ProjectPage = () => {
             dispatch: projectDispatch,
             project: project,
         }}>
-            <Container css={{ height: "100%", display: "flex", flexFlow: "column", flexWrap: "nowrap" }}>
+            <Container css={{ height: "100%", display: "flex", flexFlow: "column", flexWrap: "nowrap", margin: 0, padding: 0, maxWidth: "unset" }}>
                 <Head>
                     <title>{project?.name}</title>
                 </Head>
                 <AppBar title={project?.name} />
                 <p style={{ display: "flex", alignItems: "center", gap: "2px" }}>Breadcrumbs <FaArrowRight /> Resource Name <FaArrowRight /> Resource Name <FaArrowRight /> Resource Name</p>
-                <Row justify="flex-start" css={{ flexGrow: 1 }}>
+                <Row justify="space-between" css={{ flexGrow: 1, padding: 0, width: "100%" }}>
                     <Container css={{ maxWidth: "400px", margin: 0, padding: "$10", height: "100%" }}>
                         <ProjectTree
                             project={project}
