@@ -4,21 +4,25 @@ import ProjectTree from "components/resource/ProjectTree";
 import Resource from "components/resource/Resource";
 import Head from "next/head";
 import { useRouter, } from "next/router";
-import React, { useCallback, useEffect, useState, } from "react";
+import React, { useCallback, useEffect, useReducer, useState, } from "react";
 import { FaArrowRight, } from "react-icons/fa";
 import { toast, } from "react-toastify";
-import { IProject, IProjectData, IResource, IResourceTab, } from "types/projects";
+import { IProject, IProjectData, IResource, IResourceTab, ResourcePath, } from "types/projects";
+import ProjectContext from "utils/contexts/projectContext";
 import { getProject, updateProject, } from "utils/database/projects";
+import { createResource, getResource, removeResource, } from "utils/project/resource";
+import { projectReducer, } from "utils/reducers/projectReducer";
 
 const ProjectPage = () => {
     const router = useRouter();
-    const [project, setProject] = useState<IProject>();
+    const [project, projectDispatch] = useReducer(projectReducer, undefined);
+    // Selected resource.
     const [resource, setResource] = useState<IResource>();
 
     const loadProject = useCallback(async (projectId: string) => {
         try {
             const project = await getProject(projectId);
-            setProject(project);
+            projectDispatch({ type: "setProject", payload: project });
         } catch (error) {
             console.warn("Failed to load project", projectId);
         }
@@ -67,7 +71,7 @@ const ProjectPage = () => {
         };
         try {
             // Save in local state.
-            setProject({ ...project, data: newData });
+            projectDispatch({ type: "updateData", payload: newData });
             // Save in DB.
             await updateProject(project.id, newData);
         } catch (error) {
@@ -89,7 +93,7 @@ const ProjectPage = () => {
         };
         try {
             // Save in local state.
-            setProject({ ...project, data: newData });
+            projectDispatch({ type: "updateData", payload: newData });
             // Save in DB.
             await updateProject(project.id, newData);
         } catch (error) {
@@ -103,42 +107,53 @@ const ProjectPage = () => {
     }
 
     return (
-        <Container css={{ height: "100%", display: "flex", flexFlow: "column", flexWrap: "nowrap" }}>
-            <Head>
-                <title>{project?.name}</title>
-            </Head>
-            <AppBar title={project?.name} />
-            <p style={{ display: "flex", alignItems: "center", gap: "2px" }}>Breadcrumbs <FaArrowRight /> Resource Name <FaArrowRight /> Resource Name <FaArrowRight /> Resource Name</p>
-            <Row justify="flex-start" css={{ flexGrow: 1 }}>
-                <Container css={{ maxWidth: "400px", margin: 0, padding: "$10", height: "100%" }}>
-                    <ProjectTree
-                        project={project}
-                        onSelect={(resource) => setResource(resource)}
-                        onAddResource={async (resource) => {
-                            const newData: IProjectData = {
-                                resources: [
-                                    ...project.data.resources,
-                                    resource,
-                                ],
-                            };
-                            setProject({ ...project, data: newData });
-                            setResource(resource);
-                            // Save in DB.
-                            await updateProject(project.id, newData);
-                        }}
-                        onDeleteResource={deleteResource}
-                        onResourceUpdated={saveResource}
+        <ProjectContext.Provider value={{
+            dispatch: projectDispatch,
+            project: project,
+        }}>
+            <Container css={{ height: "100%", display: "flex", flexFlow: "column", flexWrap: "nowrap" }}>
+                <Head>
+                    <title>{project?.name}</title>
+                </Head>
+                <AppBar title={project?.name} />
+                <p style={{ display: "flex", alignItems: "center", gap: "2px" }}>Breadcrumbs <FaArrowRight /> Resource Name <FaArrowRight /> Resource Name <FaArrowRight /> Resource Name</p>
+                <Row justify="flex-start" css={{ flexGrow: 1 }}>
+                    <Container css={{ maxWidth: "400px", margin: 0, padding: "$10", height: "100%" }}>
+                        <ProjectTree
+                            project={project}
+                            onSelect={(resource) => setResource(resource)}
+                            onAddResource={async (resource) => {
+                                const newResources = createResource(project.data.resources, resource);
+                                const newData: IProjectData = {
+                                    resources: newResources,
+                                };
+                                projectDispatch({ type: "updateData", payload: newData });
+                                setResource(resource);
+                                // Save in DB.
+                                await updateProject(project.id, newData);
+                            }}
+                            onDeleteResource={deleteResource}
+                            onResourceUpdated={saveResource}
+                            onResourceMoved={async (resource, target) => {
+                                // Dropped on itself
+                                if (resource.id === target?.id) return;
+
+                                projectDispatch({ type: "moveResource", payload: [resource.id, target?.id || null] });
+                                // Save in DB.
+                                await updateProject(project.id, project.data);
+                            }}
+                        />
+                    </Container>
+                    <Resource
+                        resource={resource}
+                        saveData={(tabs, resource) => saveResource({
+                            ...resource,
+                            tabs: tabs,
+                        })}
                     />
-                </Container>
-                <Resource
-                    resource={resource}
-                    saveData={(tabs, resource) => saveResource({
-                        ...resource,
-                        tabs: tabs,
-                    })}
-                />
-            </Row>
-        </Container>
+                </Row>
+            </Container>
+        </ProjectContext.Provider>
     );
 };
 

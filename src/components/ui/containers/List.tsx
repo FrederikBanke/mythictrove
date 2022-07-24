@@ -5,4 +5,12 @@ export const List = styled("div", {
     flexFlow: "column",
     gap: "5px",
     flexWrap: "nowrap",
+
+    variants: {
+        nogap: {
+            true: {
+                gap: 0,
+            },
+        },
+    },
 });
