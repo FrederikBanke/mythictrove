@@ -23,6 +23,7 @@ type ProjectTreeProps = {
      * @param target The resource `resource` is being moved to. `null` if moved to root.
      */
     onResourceMoved(resource: IResource, target: IResource | null): void;
+    open: string | undefined;
 };
 
 const ProjectTree: FC<ProjectTreeProps> = ({
@@ -32,6 +33,7 @@ const ProjectTree: FC<ProjectTreeProps> = ({
     onDeleteResource,
     onResourceUpdated,
     onResourceMoved,
+    open,
 }) => {
     const [newResourceName, setNewResourceName] = useState<string>();
     const [focusedResource, setFocusedResource] = useState<IResource>();
@@ -75,7 +77,6 @@ const ProjectTree: FC<ProjectTreeProps> = ({
             display: "flex",
             flexFlow: "column",
             gap: "5px",
-            // justifyContent: "space-between",
             height: "800px",
             overflow: "clip",
         }}>
@@ -88,7 +89,7 @@ const ProjectTree: FC<ProjectTreeProps> = ({
             }}>
                 <List nogap
                     css={{
-                        backgroundColor: draggingTargetResource === null ? "$primary" : undefined,
+                        backgroundColor: draggingTargetResource === null ? "$secondary" : undefined,
                     }}
                     onDragOver={(e) => {
                         // This is needed for onDrop to work.
@@ -142,6 +143,7 @@ const ProjectTree: FC<ProjectTreeProps> = ({
                                 onResourceReleased={(r) => {
                                     setDraggingResource(undefined);
                                 }}
+                                open={open}
                             />
                         );
                     })}
@@ -172,6 +174,7 @@ const ProjectTree: FC<ProjectTreeProps> = ({
                                 onResourceReleased={(r) => {
                                     setDraggingResource(undefined);
                                 }}
+                                open={open}
                             />
                         );
                     })}
@@ -281,6 +284,7 @@ type ResourceItemProps = {
      */
     onResourceDraggedHover(resource: IResource | undefined): void;
     highlight: string | undefined;
+    open: string | undefined;
     depth?: number;
 } & Omit<CardProps, "resource" | "onSelect">;
 
@@ -296,6 +300,7 @@ const ResourceItem: FC<ResourceItemProps> = ({
     onResourceDropped,
     onResourceReleased,
     highlight,
+    open,
     depth = 0,
     ...props
 }) => {
@@ -396,7 +401,7 @@ const ResourceItem: FC<ResourceItemProps> = ({
                 e.preventDefault();
                 onDropHandler(resource);
             }}
-            color={highlight === resource.id ? "primary" : "default"}
+            color={highlight === resource.id ? "secondary" : open === resource.id ? "primary" : "default"}
             {...props}
         >
             {resource.name}
@@ -420,6 +425,7 @@ const ResourceItem: FC<ResourceItemProps> = ({
                     highlight={highlight}
                     depth={depth + 1}
                     onSelect={(r) => onSelect(r)}
+                    open={open}
                 />)
             }
         </List>

@@ -142,6 +142,7 @@ const ProjectPage = () => {
                                 // Save in DB.
                                 await updateProject(project.id, project.data);
                             }}
+                            open={resource?.id}
                         />
                     </Container>
                     <Resource
