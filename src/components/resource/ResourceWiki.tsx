@@ -1,4 +1,10 @@
 import { Textarea, } from "@nextui-org/react";
+import Image from "@tiptap/extension-image";
+import Link from "@tiptap/extension-link";
+import Subscript from "@tiptap/extension-subscript";
+import Superscript from "@tiptap/extension-superscript";
+import TextAlign from "@tiptap/extension-text-align";
+import Tiptap, { linkStyle, } from "components/Tiptap";
 import React, { FC, } from "react";
 
 type ResourceWikiProps = {
@@ -11,19 +17,23 @@ const ResourceWiki: FC<ResourceWikiProps> = ({
     saveData,
 }) => {
     return (
-        <Textarea
-            aria-label="editor"
-            id="editor"
-            animated={false}
-            fullWidth
-            css={{
-                "label": {
-                    backgroundColor: "transparent",
-                },
-            }}
-            placeholder="Start typing..."
-            initialValue={data}
-            onChange={(e) => saveData(e.target.value)}
+        <Tiptap
+            placeholder="Tiptap editor..."
+            content={data}
+            onUpdate={({ editor }) => saveData(editor.getHTML())}
+            showToolbar
+            extensions={[
+                TextAlign.configure({ types: ["heading", "paragraph"] }),
+                Link.configure({
+                    HTMLAttributes: { class: linkStyle().className },
+                }),
+                Image.configure({
+                    allowBase64: true,
+                    inline: true,
+                }),
+                Subscript,
+                Superscript,
+            ]}
         />
     );
 };

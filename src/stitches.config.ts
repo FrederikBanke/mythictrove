@@ -45,40 +45,6 @@ export const darkTheme = createTheme({
     theme: {},
 });
 
-// export const globalStyles = globalCss({
-//     "*": {
-//         margin: 0,
-//         padding: 0,
-//         boxSizing: "border-box",
-//         scrollbarWidth: "thin",
-//     },
-//     "h1,h2,h3,h4,h5,h6": {
-//         fontFamily: "Roboto, Arial, sans-serif",
-//     },
-//     "body": {
-//         fontFamily: "Nunito, Roboto, Arial, sans-serif",
-//         fontSize: "16px",
-//         margin: 0,
-//         color: "$text",
-//         height: "100vh",
-//         width: "100vw",
-//         backgroundColor: "$background",
-//     },
-//     "a": {
-//         color: "inherit",
-//         textDecoration: "none",
-//     },
-//     ".click, button, a": {
-//         cursor: "pointer",
-//     },
-//     ".opaque": {
-//         opacity: "1 !important",
-//     },
-//     "[contenteditable]": {
-//         outline: "0px solid transparent",
-//     },
-// });
-
 export const globalStyles = globalCss({
     "html, body, #__next, #__next > div": {
         height: "100%",
@@ -108,5 +74,12 @@ export const globalStyles = globalCss({
     },
     [`.${darkTheme} *::-webkit-scrollbar-thumb`]: {
         background: "$secondary",
+    },
+    ".ProseMirror p.is-editor-empty:first-child::before": {
+        color: " #adb5bd",
+        content: "attr(data-placeholder)",
+        float: "left",
+        height: 0,
+        pointerEvents: "none",
     },
 });

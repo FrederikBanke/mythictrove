@@ -1,3 +1,4 @@
+import { Container, } from "@nextui-org/react";
 import React, { FC, } from "react";
 import { IResource, IResourceTab, } from "types/projects";
 import { makeId, } from "utils/makeId";
@@ -30,14 +31,14 @@ const Resource: FC<ResourceProps> = ({
     }
 
     return (
-        <div style={{ flexGrow: 1 }}>
+        <Container css={{ flexGrow: 1, overflow: "auto", height: "stretch" }}>
             <h1>{resource.name}</h1>
             <TabContainer
                 tabs={resource.tabs || [{ id: makeId(), name: "main", data: { resourceType: "wiki", content: "" } }]}
                 saveData={(data) => saveData(data, resource)}
             />
             <p>Page Properties</p>
-        </div>
+        </Container>
     );
 };
 
